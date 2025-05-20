@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
-""" task 3 module """
+"""A Basic Flask app with internationalization support.
+"""
 from flask_babel import Babel
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 
 
 class Config:
-    """class representing a Flask Babel configuration """
+    """Represents a Flask Babel configuration.
+    """
     LANGUAGES = ["en", "fr"]
     BABEL_DEFAULT_LOCALE = "en"
     BABEL_DEFAULT_TIMEZONE = "UTC"
@@ -19,7 +21,8 @@ babel = Babel(app)
 
 @babel.localeselector
 def get_locale() -> str:
-    """Get locale from request"""
+    """Retrieves the locale for a web page.
+    """
     queries = request.query_string.decode('utf-8').split('&')
     query_table = dict(map(
         lambda x: (x if '=' in x else '{}='.format(x)).split('='),
@@ -33,8 +36,9 @@ def get_locale() -> str:
 
 @app.route('/')
 def get_index() -> str:
-    """ template """
-    return render_template('3-index.html')
+    """The home/index page.
+    """
+    return render_template('4-index.html')
 
 
 if __name__ == '__main__':
