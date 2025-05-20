@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
-"""Basic Flask app with internationalization support"""
+"""A Basic Flask app with internationalization support.
+"""
+import pytz
 from flask_babel import Babel
 from typing import Union, Dict
 from flask import Flask, render_template, request, g
@@ -54,14 +56,27 @@ def get_locale() -> str:
     header_locale = request.headers.get('locale', '')
     if header_locale in app.config["LANGUAGES"]:
         return header_locale
-    return request.accept_languages.best_match(app.config["LANGUAGES"])
+    return app.config['BABEL_DEFAULT_LOCALE']
+
+
+@babel.timezoneselector
+def get_timezone() -> str:
+    """Retrieves the timezone for a web page.
+    """
+    timezone = request.args.get('timezone', '').strip()
+    if not timezone and g.user:
+        timezone = g.user['timezone']
+    try:
+        return pytz.timezone(timezone).zone
+    except pytz.exceptions.UnknownTimeZoneError:
+        return app.config['BABEL_DEFAULT_TIMEZONE']
 
 
 @app.route('/')
 def get_index() -> str:
     """The home/index page.
     """
-    return render_template('6-index.html')
+    return render_template('7-index.html')
 
 
 if __name__ == '__main__':
